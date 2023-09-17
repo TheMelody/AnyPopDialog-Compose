@@ -1,6 +1,6 @@
 class LibraryInfo {
   String groupId
-  String expandable_text_artifactId
+  String lib_artifactId
   Integer compileSdk
   Integer targetSdk
   Integer minSdk
@@ -20,7 +20,7 @@ def getLibraryInfo() {
   def props = readLibraryProps()
   LibraryInfo info = new LibraryInfo()
 
-  info.expandable_text_artifactId = props.get('LIB_ARTIFACT_ID') as String
+  info.lib_artifactId = props.get('LIB_ARTIFACT_ID') as String
   info.groupId = props.get('GROUP_ID') as String
 
   info.lib_versionName = props.get('LIB_VERSION_NAME') as String
