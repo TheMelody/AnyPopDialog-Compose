@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="dialog_knew">知道了</string>
+
+
+    <string name="test_network_unavailable_dialog_title">网络设置方法</string>
+    <string name="test_network_unavailable_dialog_content">如需要连接到互联网，可以参照以下方法：\n1、检查设备的 “设置” - “无线局域网” 设置，查看是否有可接入的无线局域网信号。\n2、检查设备是否启用了蜂窝数据 (启用后运营商可能会收取数据通信费用)。 \n3、如果你已接入无线局域网络：请检查你所连接的网络是否已接入互联网，或该网络是否已允许你的设备访问互联网。</string>
+
+</resources>

@@ -1,0 +1,23 @@
+apply from: './gradle/release/lib_info.gralde'
+
+ext {
+    libraryInfo = getLibraryInfo()
+}
+
+group = libraryInfo.groupId
+version = libraryInfo.lib_versionName
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username = System.getenv("MAVEN_TOKEN_USERNAME")
+            password = System.getenv("MAVEN_TOKEN_PASSWORD")
+        }
+    }
+}

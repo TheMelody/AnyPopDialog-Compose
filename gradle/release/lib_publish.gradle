@@ -1,0 +1,116 @@
+
+apply plugin: "maven-publish"
+apply plugin: "signing"
+
+task androidJavaDoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    options.encoding "UTF-8"
+    options.charSet 'UTF-8'
+    options.author true
+    options.version true
+    failOnError false
+}
+
+task androidJavaDocJar(type: Jar, dependsOn: androidJavaDoc) {
+    archiveClassifier.set('javadoc')
+    from androidJavaDoc.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    from android.sourceSets.main.java.srcDirs
+}
+
+/**
+ * Helper to add dependencies to the POM node. This is needed during manual construction
+ * of the dependencies block
+ */
+static def addPomDependency(groovy.util.Node dependenciesNode, Dependency dependency, String dependencyScope) {
+    // Ignore incomplete dependencies
+    if (dependency.name == null || dependency.name == 'unspecified' || dependency.group == null || dependency.version == null) {
+        return
+    }
+
+    def dependencyNode = dependenciesNode.appendNode('dependency')
+    dependencyNode.appendNode('groupId', dependency.group)
+    dependencyNode.appendNode('artifactId', dependency.name)
+    dependencyNode.appendNode('version', dependency.version)
+    dependencyNode.appendNode('scope', dependencyScope)
+}
+
+/**
+ * Deploy to Maven Central (Sonatype)
+ * `$ ./gradlew clean library:assembleRelease androidJavaDocJar androidSourcesJar generatePomFileForNexusPublication publishNexusPublicationToSonatypeRepository closeSonatypeStagingRepository`
+ *
+ * 环境变量
+ *  - `MAVEN_TOKEN_USERNAME` : Sonatype token 用户名
+ *  - `MAVEN_TOKEN_PASSWORD` : Sonatype  token 密码
+ *  - `SIGNING_KEY_ID` : 秘钥后8位
+ *  - `SIGNING_KEY` : GPG密钥
+ *  - `SIGNING_KEY_PASSWORD` : GPG密钥的密码
+ */
+publishing {
+    publications {
+        nexus(MavenPublication) {
+            groupId rootProject.ext.libraryInfo.groupId
+            artifactId rootProject.ext.libraryInfo.expandable_text_artifactId
+            version rootProject.ext.libraryInfo.lib_versionName
+
+            artifact bundleReleaseAar
+            artifact androidJavaDocJar
+            artifact androidSourcesJar
+
+            pom {
+                name = rootProject.ext.libraryInfo.groupId + ":" + rootProject.ext.libraryInfo.expandable_text_artifactId
+                description = "Compose可折叠/展开更多的Text可组合项"
+                url = "https://github.com/TheMelody/AnyPopDialog-Compose"
+                licenses {
+                    license {
+                        name = "Apache License"
+                        url = "https://raw.githubusercontent.com/TheMelody/AnyPopDialog-Compose/main/LICENSE"
+                    }
+                }
+                scm {
+                    connection = 'scm:git:github.com:TheMelody/AnyPopDialog-Compose.git'
+                    developerConnection = 'scm:git:ssh://github.com:TheMelody/AnyPopDialog-Compose.git'
+                    url = 'https://github.com/TheMelody/AnyPopDialog-Compose/tree/master'
+                }
+                developers {
+                    developer {
+                        name = '被风吹过的夏天'
+                        email = 'developer_melody@163.com'
+                        organization = 'TheMelody'
+                        organizationUrl = 'https://github.com/TheMelody'
+                    }
+                }
+
+                // The generated POM doesn't include dependencies when building Android artifacts, so we manually
+                // add the dependencies to the POM here
+                withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+
+                    // Iterate over the implementation dependencies, adding a <dependency> node for each
+                    configurations.implementation.dependencies.each {
+                        addPomDependency(dependenciesNode, it, "runtime")
+                    }
+
+                    // Iterate over the api dependencies, adding a <dependency> node for each
+                    configurations.api.dependencies.each {
+                        addPomDependency(dependenciesNode, it, "compile")
+                    }
+                }
+            }
+        }
+    }
+}
+
+signing {
+    useInMemoryPgpKeys(
+            System.getenv("SIGNING_KEY_ID"),
+            System.getenv("SIGNING_KEY"),
+            System.getenv("SIGNING_KEY_PASSWORD"),
+    )
+
+    sign publishing.publications.nexus
+}

@@ -1,0 +1,36 @@
+class LibraryInfo {
+  String groupId
+  String expandable_text_artifactId
+  Integer compileSdk
+  Integer targetSdk
+  Integer minSdk
+
+  String lib_versionName
+}
+
+def readLibraryProps() {
+  def versionProps = new Properties()
+  def file = new File("$projectDir/gradle.properties")
+  versionProps.load(file.newInputStream())
+
+  return versionProps
+}
+
+def getLibraryInfo() {
+  def props = readLibraryProps()
+  LibraryInfo info = new LibraryInfo()
+
+  info.expandable_text_artifactId = props.get('LIB_ARTIFACT_ID') as String
+  info.groupId = props.get('GROUP_ID') as String
+
+  info.lib_versionName = props.get('LIB_VERSION_NAME') as String
+  info.compileSdk = props.get('COMPILE_SDK_VERSION') as Integer
+  info.targetSdk = props.get('TARGET_SDK_VERSION') as Integer
+  info.minSdk = props.get('MIN_SDK_VERSION') as Integer
+
+  return info
+}
+
+ext {
+  getLibraryInfo = this.&getLibraryInfo
+}
