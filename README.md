@@ -11,6 +11,14 @@ AnyPopDialog-Compose
 
 <img src="screenshot/preview.gif" width="30%"/>
 
+# 集成
+
+```gradle.kts
+dependencies {
+    implementation("io.github.TheMelody:any_pop_dialog_compose:1.0.0")
+}
+```
+
 # 用法
 ```kotlin
 @Composable
