@@ -5,7 +5,6 @@ apply plugin: "signing"
 task androidJavaDoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    excludes = ['**/*.kt']
     options.encoding "UTF-8"
     options.charSet 'UTF-8'
     options.author true

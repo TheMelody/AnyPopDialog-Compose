@@ -7,7 +7,7 @@ afterEvaluate {
 }
 
 android {
-    namespace = "com.melody.dialog.any.pop"
+    namespace = "com.melody.dialog.any_pop"
     compileSdk = 33
 
     defaultConfig {

@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
-import com.melody.dialog.any.pop.AnyPopDialog
+import com.melody.dialog.any_pop.AnyPopDialog
 
 /**
  * 读者根据自己的业务自行定制，测试快手无网络提示的Dialog
