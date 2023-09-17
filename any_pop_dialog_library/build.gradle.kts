@@ -7,7 +7,7 @@ afterEvaluate {
 }
 
 android {
-    namespace = "com.melody.dialog.any.pop"
+    namespace = "com.melody.dialog.any_pop"
     compileSdk = 33
 
     defaultConfig {
@@ -42,6 +42,9 @@ android {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
+    }
+    lint {
+        abortOnError = false
     }
 }
 

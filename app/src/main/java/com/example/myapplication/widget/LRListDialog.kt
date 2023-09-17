@@ -6,11 +6,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -24,9 +21,9 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
-import com.melody.dialog.any.pop.AnyPopDialog
-import com.melody.dialog.any.pop.AnyPopDialogProperties
-import com.melody.dialog.any.pop.DirectionState
+import com.melody.dialog.any_pop.AnyPopDialog
+import com.melody.dialog.any_pop.AnyPopDialogProperties
+import com.melody.dialog.any_pop.DirectionState
 
 /**
  * 读者根据自己的业务自行定制，测试LEFT/RIGHT弹出的Dialog

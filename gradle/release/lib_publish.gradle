@@ -5,6 +5,7 @@ apply plugin: "signing"
 task androidJavaDoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    excludes = ['**/*.kt']
     options.encoding "UTF-8"
     options.charSet 'UTF-8'
     options.author true
@@ -54,7 +55,7 @@ publishing {
     publications {
         nexus(MavenPublication) {
             groupId rootProject.ext.libraryInfo.groupId
-            artifactId rootProject.ext.libraryInfo.expandable_text_artifactId
+            artifactId rootProject.ext.libraryInfo.lib_artifactId
             version rootProject.ext.libraryInfo.lib_versionName
 
             artifact bundleReleaseAar
@@ -62,8 +63,8 @@ publishing {
             artifact androidSourcesJar
 
             pom {
-                name = rootProject.ext.libraryInfo.groupId + ":" + rootProject.ext.libraryInfo.expandable_text_artifactId
-                description = "Compose可折叠/展开更多的Text可组合项"
+                name = rootProject.ext.libraryInfo.groupId + ":" + rootProject.ext.libraryInfo.lib_artifactId
+                description = "可控制Compose Dialog弹出的方向，支持上下左右，自由定制，真Dialog哦🔥"
                 url = "https://github.com/TheMelody/AnyPopDialog-Compose"
                 licenses {
                     license {

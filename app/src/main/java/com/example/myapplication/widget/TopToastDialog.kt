@@ -21,9 +21,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
-import com.melody.dialog.any.pop.AnyPopDialog
-import com.melody.dialog.any.pop.AnyPopDialogProperties
-import com.melody.dialog.any.pop.DirectionState
+import com.melody.dialog.any_pop.AnyPopDialog
+import com.melody.dialog.any_pop.AnyPopDialogProperties
+import com.melody.dialog.any_pop.DirectionState
 
 @Composable
 internal fun TopToastDialog(showDialog: Boolean, onDismiss: () -> Unit) {
