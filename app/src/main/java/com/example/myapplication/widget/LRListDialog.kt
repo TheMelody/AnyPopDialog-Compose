@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -35,6 +36,7 @@ internal fun LRListDialog(showDialog: Boolean, onDismiss: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth(0.6F)
                 .fillMaxHeight()
+                .imePadding()
                 .background(color = colorResource(id = R.color.dialog_window_background)),
             // 可以自由配置，如监听键盘弹起，禁止outSide关闭等，根据自己需求定制吧
             properties = AnyPopDialogProperties(direction = DirectionState.RIGHT),
