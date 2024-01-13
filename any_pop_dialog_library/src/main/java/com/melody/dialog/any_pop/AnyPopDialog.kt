@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.Dialog
@@ -117,11 +118,17 @@ private fun DialogFullScreen(
                     attributes.copyFrom(activityWindow.attributes)
                     attributes.type = dialogWindow.attributes.type
                     dialogWindow.attributes = attributes
+                    // 修复Android10 - Android11出现背景全黑的情况
+                    dialogWindow.setBackgroundDrawableResource(android.R.color.transparent)
 
                     dialogWindow.setLayout(
                         activityWindow.decorView.width,
                         activityWindow.decorView.height
                     )
+                    // 修复Android低版本系统，状态栏和导航栏颜色问题
+                    dialogWindow.statusBarColor = properties.statusBarColor.toArgb()
+                    dialogWindow.navigationBarColor = properties.navBarColor.toArgb()
+
                     WindowCompat.getInsetsController(dialogWindow, parentView)
                         .isAppearanceLightNavigationBars = properties.isAppearanceLightNavigationBars
                     isAnimateLayout = true
@@ -203,6 +210,8 @@ fun AnyPopDialog(
  * @param direction 当前对话框弹出的方向
  * @param backgroundDimEnabled 背景渐入检出开关
  * @param durationMillis 弹框消失和进入的时长
+ * @param statusBarColor 外部传入设置状态栏颜色，默认透明没有颜色，**建议**:传你自己的Activity状态栏颜色
+ * @param navBarColor 外部传入导航栏颜色，默认透明没有颜色，**建议**:传你自己的Activity导航栏颜色
  * @param securePolicy 屏幕安全策略
  */
 @Immutable
@@ -212,6 +221,8 @@ class AnyPopDialogProperties(
     val isAppearanceLightNavigationBars: Boolean = true,
     val direction: DirectionState,
     val backgroundDimEnabled: Boolean = true,
+    val statusBarColor: Color = Color.Transparent,
+    val navBarColor: Color = Color.Transparent,
     val durationMillis: Int = DefaultDurationMillis,
     val securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit
 ) {

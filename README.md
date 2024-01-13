@@ -15,7 +15,7 @@ AnyPopDialog-Compose
 
 ```gradle.kts
 dependencies {
-    implementation("io.github.TheMelody:any_pop_dialog_compose:1.0.0")
+    implementation("io.github.TheMelody:any_pop_dialog_compose:1.0.1")
 }
 ```
 
@@ -30,6 +30,7 @@ fun TestXXXX() {
             modifier = Modifier.fillMaxWidth().background(...),
             isActiveClose = isActiveClose,
             // 根据你自己的功能，调整进入方向即可，支持:TOP/LEFT/RIGHT/BOTTOM
+            // 也可以修改"状态栏"和"导航栏"背景色哦，自己查看方法注释即可
             properties = AnyPopDialogProperties(direction = DirectionState.BOTTOM),
             content = {
                 // 这里放你自己的Dialog内容
