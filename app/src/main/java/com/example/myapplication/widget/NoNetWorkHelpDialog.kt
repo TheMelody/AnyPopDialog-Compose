@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,7 +49,8 @@ internal fun NoNetWorkHelpDialog(showDialog: Boolean, onDismiss: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
-                .background(color = colorResource(id = R.color.dialog_window_background)),
+                .background(color = colorResource(id = R.color.dialog_window_background))
+                .systemBarsPadding(),
             isActiveClose = isActiveClose,
             content = {
                 NetSettingContent(
