@@ -98,7 +98,7 @@ private fun DialogFullScreen(
         content = {
             val animColor = remember { Animatable(Color.Transparent) }
             LaunchedEffect(isAnimateLayout) {
-                if(properties.backgroundDimEnabled) {
+                if (properties.backgroundDimEnabled) {
                     animColor.animateTo(
                         if (isAnimateLayout) Color.Black.copy(alpha = 0.45F) else Color.Transparent,
                         animationSpec = tween(properties.durationMillis)
@@ -115,29 +115,32 @@ private fun DialogFullScreen(
             val dialogWindow = getDialogWindow()
             val parentView = LocalView.current.parent as View
             SideEffect {
-                if (activityWindow != null && dialogWindow != null && !isBackPress && !isAnimateLayout) {
-                    val attributes = WindowManager.LayoutParams()
-                    attributes.copyFrom(activityWindow.attributes)
-                    attributes.type = dialogWindow.attributes.type
-                    dialogWindow.attributes = attributes
-                    // 修复Android10 - Android11出现背景全黑的情况
-                    dialogWindow.setBackgroundDrawableResource(android.R.color.transparent)
+                if (activityWindow == null || dialogWindow == null || isBackPress || isAnimateLayout)
+                    return@SideEffect
 
-                    dialogWindow.setLayout(
-                        activityWindow.decorView.width,
-                        activityWindow.decorView.height
-                    )
-                    dialogWindow.statusBarColor = Color.Transparent.toArgb()
-                    dialogWindow.navigationBarColor = Color.Transparent.toArgb()
+                val attributes = WindowManager.LayoutParams()
+                attributes.copyFrom(activityWindow.attributes)
+                attributes.type = dialogWindow.attributes.type
+                dialogWindow.attributes = attributes
+                // 修复Android10 - Android11出现背景全黑的情况
+                dialogWindow.setBackgroundDrawableResource(android.R.color.transparent)
+                // 禁止Dialog跟随软键盘高度变化，用Compose提供的imePadding替代
+                dialogWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
-                    WindowCompat.getInsetsController(dialogWindow, parentView)
-                        .isAppearanceLightNavigationBars = properties.isAppearanceLightNavigationBars
-                    isAnimateLayout = true
-                }
+                dialogWindow.setLayout(
+                    activityWindow.decorView.width,
+                    activityWindow.decorView.height
+                )
+                dialogWindow.statusBarColor = Color.Transparent.toArgb()
+                dialogWindow.navigationBarColor = Color.Transparent.toArgb()
+
+                WindowCompat.getInsetsController(dialogWindow, parentView)
+                    .isAppearanceLightNavigationBars = properties.isAppearanceLightNavigationBars
+                isAnimateLayout = true
             }
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = when(properties.direction){
+                contentAlignment = when (properties.direction) {
                     DirectionState.TOP -> Alignment.TopCenter
                     DirectionState.LEFT -> Alignment.CenterStart
                     DirectionState.RIGHT -> Alignment.CenterEnd
@@ -200,9 +203,10 @@ fun AnyPopDialog(
         onDismissRequest = onDismiss,
         properties = properties
     ) {
-        Column(modifier = modifier) {
-            content()
-        }
+        Column(
+            modifier = modifier,
+            content = content
+        )
     }
 }
 
@@ -262,7 +266,7 @@ enum class DirectionState {
 
 private fun Modifier.clickOutSideModifier(
     dismissOnClickOutside: Boolean,
-    onTap:()->Unit
+    onTap: () -> Unit
 ) = this.then(
     if (dismissOnClickOutside) {
         Modifier.pointerInput(Unit) {

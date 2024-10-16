@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -41,14 +42,14 @@ internal fun LRListDialog(showDialog: Boolean, onDismiss: () -> Unit) {
                 .fillMaxWidth(0.6F)
                 .fillMaxHeight()
                 .background(color = colorResource(id = R.color.dialog_window_background))
-                .systemBarsPadding(),
+                .systemBarsPadding()
+                .imePadding(),
             properties = AnyPopDialogProperties(direction = DirectionState.RIGHT),
             content = {
                 LRListContent(
                     modifier = Modifier
                         .padding(start = 20.dp, end = 20.dp)
-                        .fillMaxSize(),
-                    ignoreEdit = false
+                        .fillMaxSize()
                 )
             },
             onDismiss = onDismiss
@@ -73,7 +74,6 @@ internal fun LRListSB1Dialog(showDialog: Boolean, onDismiss: () -> Unit) {
                         .background(color = colorResource(id = R.color.test_sb1_background))// 注意这里
                         .statusBarsPadding()// 注意这里
                 )
-                // 看好了，上面叠加了状态栏，不要加EditText了
                 LRListContent(
                     modifier = Modifier
                         .align(Alignment.End)
@@ -81,8 +81,8 @@ internal fun LRListSB1Dialog(showDialog: Boolean, onDismiss: () -> Unit) {
                         .fillMaxHeight()
                         .background(color = colorResource(id = R.color.dialog_window_background))
                         .navigationBarsPadding()
-                        .padding(start = 20.dp, end = 20.dp),
-                    ignoreEdit = true
+                        .imePadding()
+                        .padding(start = 20.dp, end = 20.dp)
                 )
             },
             onDismiss = onDismiss
@@ -92,7 +92,7 @@ internal fun LRListSB1Dialog(showDialog: Boolean, onDismiss: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LRListContent(modifier: Modifier, ignoreEdit:Boolean) {
+private fun LRListContent(modifier: Modifier) {
     var textField by remember {
         mutableStateOf("")
     }
@@ -111,15 +111,13 @@ private fun LRListContent(modifier: Modifier, ignoreEdit:Boolean) {
                 )
             }
         }
-        if(!ignoreEdit) {
-            item {
-                TextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp),
-                    value = textField,
-                    onValueChange = { textField = it })
-            }
+        item {
+            TextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp),
+                value = textField,
+                onValueChange = { textField = it })
         }
     }
 }
