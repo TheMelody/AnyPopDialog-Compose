@@ -15,7 +15,7 @@ AnyPopDialog-Compose
 
 # 效果
 <div>
-    <img src="screenshot/preview.gif" width="30%"/>
+    <img src="screenshot/preview.gif" width="32.4%"/>
     <img src="screenshot/小横条.gif" width="30%"/>
     <img src="screenshot/三大金刚.gif" width="30%"/>
 </div>
