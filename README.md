@@ -7,15 +7,21 @@ AnyPopDialog-Compose
 
 可控制Compose Dialog弹出的方向，支持上下左右，自由定制，真Dialog哦🔥
 
+> [!NOTE]  
+> AnyPopDialog需要自己传修改后的Modifier，如Modifier.systemBarsPadding()等等
+> 示例中提供了如何设置导航栏和状态栏颜色的例子，请自行查看
+
+
 # 效果
 
 <img src="screenshot/preview.gif" width="30%"/>
+
 
 # 集成
 
 ```gradle.kts
 dependencies {
-    implementation("io.github.TheMelody:any_pop_dialog_compose:1.0.2")
+    implementation("io.github.TheMelody:any_pop_dialog_compose:1.0.3")
 }
 ```
 
