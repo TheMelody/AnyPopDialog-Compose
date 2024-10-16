@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -37,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 import com.melody.dialog.any_pop.AnyPopDialog
+import com.melody.dialog.any_pop.AnyPopDialogProperties
+import com.melody.dialog.any_pop.DirectionState
 
 /**
  * 读者根据自己的业务自行定制，测试快手无网络提示的Dialog
@@ -50,12 +53,44 @@ internal fun NoNetWorkHelpDialog(showDialog: Boolean, onDismiss: () -> Unit) {
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                 .background(color = colorResource(id = R.color.dialog_window_background))
-                .systemBarsPadding(),
+                .systemBarsPadding(), // 自己设置安全区域padding
             isActiveClose = isActiveClose,
             content = {
                 NetSettingContent(
                     modifier = Modifier
                         .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    onDismiss = {
+                        isActiveClose = true
+                    }
+                )
+            },
+            onDismiss = onDismiss
+        )
+    }
+}
+
+/**
+ * 给你展示如何设置导航栏颜色
+ */
+@Composable
+internal fun NoNetWorkHelpNavBarDialog1(showDialog: Boolean, onDismiss: () -> Unit) {
+    if (showDialog) {
+        var isActiveClose by remember { mutableStateOf(false) }
+        AnyPopDialog(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
+            isActiveClose = isActiveClose,
+            properties = AnyPopDialogProperties(direction = DirectionState.BOTTOM),
+            content = {
+                NetSettingContent(
+                    modifier = Modifier
+                        .background(color = colorResource(id = R.color.test_navbar1_background)) // 注意这里
+                        .navigationBarsPadding() // 注意这里
+                        .background(color = colorResource(id = R.color.dialog_window_background)) // 注意这里
+                        .padding(20.dp)
                         .fillMaxWidth()
                         .wrapContentHeight(),
                     onDismiss = {

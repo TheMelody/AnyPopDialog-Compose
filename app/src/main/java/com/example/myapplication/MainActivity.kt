@@ -20,7 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.widget.LRListDialog
+import com.example.myapplication.widget.LRListSB1Dialog
 import com.example.myapplication.widget.NoNetWorkHelpDialog
+import com.example.myapplication.widget.NoNetWorkHelpNavBarDialog1
 import com.example.myapplication.widget.TopToastDialog
 
 class MainActivity : ComponentActivity() {
@@ -42,11 +44,19 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TestContent(modifier: Modifier = Modifier) {
+    // 请打开：com.example.myapplication.ui.theme.Theme.kt文件，查看第61行
+
     var showNetHelpDialog by remember { mutableStateOf(false) }
     NoNetWorkHelpDialog(showNetHelpDialog){ showNetHelpDialog = false }
 
+    var showNavBar1Dialog by remember { mutableStateOf(false) }
+    NoNetWorkHelpNavBarDialog1(showNavBar1Dialog){ showNavBar1Dialog = false } // 自己改Modifier
+
     var showLRListDialog by remember { mutableStateOf(false) }
     LRListDialog(showLRListDialog){ showLRListDialog = false }
+
+    var showLRListSBDialog by remember { mutableStateOf(false) }
+    LRListSB1Dialog(showLRListSBDialog){ showLRListSBDialog = false } // 自己改Modifier
 
     var showTOPDialog by remember { mutableStateOf(false) }
     TopToastDialog(showTOPDialog){ showTOPDialog = false }
@@ -64,6 +74,12 @@ fun TestContent(modifier: Modifier = Modifier) {
             }
             Button(onClick = { showTOPDialog = !showTOPDialog }) {
                 Text(text = "测试顶部弹出") // 这个看你自己怎么玩了，有时候也是可以当做Toast的
+            }
+            Button(onClick = { showNavBar1Dialog = !showNavBar1Dialog }) {
+                Text(text = "无法理解要修改【导航栏颜色】的同学在想什么\uD83E\uDD23") // 自己改Modifier
+            }
+            Button(onClick = { showLRListSBDialog = !showLRListSBDialog }) {
+                Text(text = "无法理解要修改【状态栏颜色】的同学在想什么\uD83E\uDD23") // 自己改Modifier
             }
         }
     }

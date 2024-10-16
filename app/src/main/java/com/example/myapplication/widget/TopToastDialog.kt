@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -42,16 +41,13 @@ internal fun TopToastDialog(showDialog: Boolean, onDismiss: () -> Unit) {
                     onClick = {
                         isActiveClose = true
                     }
-                )
-                .systemBarsPadding(),
+                ).systemBarsPadding(),
             isActiveClose = isActiveClose,
             // 请根据自己需要自己配置，自己定制谢谢配合
             properties = AnyPopDialogProperties(
                 direction = DirectionState.TOP,
                 dismissOnClickOutside = true,
-                backgroundDimEnabled = false,
-                // 你自己设置哦
-                navBarColor = MaterialTheme.colorScheme.background
+                backgroundDimEnabled = false
             ),
             content = {
                 TopToastContent(

@@ -10,6 +10,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
@@ -110,14 +111,12 @@ private fun DialogFullScreen(
                 }
             }
             val activityWindow = getActivityWindow()
+
             val dialogWindow = getDialogWindow()
             val parentView = LocalView.current.parent as View
             SideEffect {
                 if (activityWindow == null || dialogWindow == null || isBackPress || isAnimateLayout)
                     return@SideEffect
-
-                // 禁止Dialog跟随软键盘高度变化，应使用Compose提供的imePadding替代
-                dialogWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
                 val attributes = WindowManager.LayoutParams()
                 attributes.copyFrom(activityWindow.attributes)
@@ -125,18 +124,18 @@ private fun DialogFullScreen(
                 dialogWindow.attributes = attributes
                 // 修复Android10 - Android11出现背景全黑的情况
                 dialogWindow.setBackgroundDrawableResource(android.R.color.transparent)
+                // 禁止Dialog跟随软键盘高度变化，用Compose提供的imePadding替代
+                dialogWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
                 dialogWindow.setLayout(
                     activityWindow.decorView.width,
                     activityWindow.decorView.height
                 )
-                // 修复Android低版本系统，状态栏和导航栏颜色问题
-                dialogWindow.statusBarColor = properties.statusBarColor.toArgb()
-                dialogWindow.navigationBarColor = properties.navBarColor.toArgb()
+                dialogWindow.statusBarColor = Color.Transparent.toArgb()
+                dialogWindow.navigationBarColor = Color.Transparent.toArgb()
 
                 WindowCompat.getInsetsController(dialogWindow, parentView)
-                    .isAppearanceLightNavigationBars =
-                    properties.isAppearanceLightNavigationBars
+                    .isAppearanceLightNavigationBars = properties.isAppearanceLightNavigationBars
                 isAnimateLayout = true
             }
             Box(
@@ -164,13 +163,15 @@ private fun DialogFullScreen(
                         DirectionState.TOP -> slideInVertically(initialOffsetY = { -it })
                         DirectionState.LEFT -> slideInHorizontally(initialOffsetX = { -it })
                         DirectionState.RIGHT -> slideInHorizontally(initialOffsetX = { it })
-                        else -> slideInVertically(initialOffsetY = { it })
+                        DirectionState.BOTTOM ->  slideInVertically(initialOffsetY = { it })
+                        else -> fadeIn()
                     },
                     exit = when (properties.direction) {
                         DirectionState.TOP -> fadeOut() + slideOutVertically(targetOffsetY = { -it })
                         DirectionState.LEFT -> fadeOut() + slideOutHorizontally(targetOffsetX = { -it })
                         DirectionState.RIGHT -> fadeOut() + slideOutHorizontally(targetOffsetX = { it })
-                        else -> fadeOut() + slideOutVertically(targetOffsetY = { it })
+                        DirectionState.BOTTOM -> fadeOut() + slideOutVertically(targetOffsetY = { it })
+                        else -> fadeOut()
                     }
                 ) {
                     content()
@@ -214,10 +215,8 @@ fun AnyPopDialog(
  * @param dismissOnClickOutside 是否支持空白区域点击关闭Dialog
  * @param isAppearanceLightNavigationBars 导航栏前景色是不是亮色
  * @param direction 当前对话框弹出的方向
- * @param backgroundDimEnabled 背景渐入检出开关
+ * @param backgroundDimEnabled 背景渐入渐出开关
  * @param durationMillis 弹框消失和进入的时长
- * @param statusBarColor 外部传入设置状态栏颜色，默认透明没有颜色，**建议**:传你自己的Activity状态栏颜色
- * @param navBarColor 外部传入导航栏颜色，默认透明没有颜色，**建议**:传你自己的Activity导航栏颜色
  * @param securePolicy 屏幕安全策略
  */
 @Immutable
@@ -227,8 +226,6 @@ class AnyPopDialogProperties(
     val isAppearanceLightNavigationBars: Boolean = true,
     val direction: DirectionState,
     val backgroundDimEnabled: Boolean = true,
-    val statusBarColor: Color = Color.Transparent,
-    val navBarColor: Color = Color.Transparent,
     val durationMillis: Int = DefaultDurationMillis,
     val securePolicy: SecureFlagPolicy = SecureFlagPolicy.Inherit
 ) {
@@ -263,7 +260,8 @@ enum class DirectionState {
     TOP,
     LEFT,
     RIGHT,
-    BOTTOM
+    BOTTOM,
+    NONE
 }
 
 private fun Modifier.clickOutSideModifier(
