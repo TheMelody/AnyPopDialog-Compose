@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
     <color name="dialog_window_background">#FFFFFFFF</color>
     <color name="dialog_toast_background">#F57A7A</color>
+    <color name="test_navbar1_background">#F5B37A</color>
+    <color name="test_sb1_background">#45DDB2</color>
+
+
 </resources>

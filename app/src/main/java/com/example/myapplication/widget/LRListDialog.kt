@@ -2,12 +2,15 @@ package com.example.myapplication.widget
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -17,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
@@ -36,15 +40,49 @@ internal fun LRListDialog(showDialog: Boolean, onDismiss: () -> Unit) {
             modifier = Modifier
                 .fillMaxWidth(0.6F)
                 .fillMaxHeight()
-                .imePadding()
-                .background(color = colorResource(id = R.color.dialog_window_background)),
-            // 可以自由配置，如监听键盘弹起，禁止outSide关闭等，根据自己需求定制吧
+                .background(color = colorResource(id = R.color.dialog_window_background))
+                .systemBarsPadding(),
             properties = AnyPopDialogProperties(direction = DirectionState.RIGHT),
             content = {
                 LRListContent(
                     modifier = Modifier
                         .padding(start = 20.dp, end = 20.dp)
-                        .fillMaxSize()
+                        .fillMaxSize(),
+                    ignoreEdit = false
+                )
+            },
+            onDismiss = onDismiss
+        )
+    }
+}
+
+
+/**
+ * 给你展示如何设置状态栏颜色
+ */
+@Composable
+internal fun LRListSB1Dialog(showDialog: Boolean, onDismiss: () -> Unit) {
+    if (showDialog) {
+        AnyPopDialog(
+            modifier = Modifier.fillMaxSize(),
+            properties = AnyPopDialogProperties(direction = DirectionState.NONE),
+            content = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = colorResource(id = R.color.test_sb1_background))// 注意这里
+                        .statusBarsPadding()// 注意这里
+                )
+                // 看好了，上面叠加了状态栏，不要加EditText了
+                LRListContent(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .fillMaxWidth(0.6F)
+                        .fillMaxHeight()
+                        .background(color = colorResource(id = R.color.dialog_window_background))
+                        .navigationBarsPadding()
+                        .padding(start = 20.dp, end = 20.dp),
+                    ignoreEdit = true
                 )
             },
             onDismiss = onDismiss
@@ -54,7 +92,7 @@ internal fun LRListDialog(showDialog: Boolean, onDismiss: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun LRListContent(modifier: Modifier) {
+private fun LRListContent(modifier: Modifier, ignoreEdit:Boolean) {
     var textField by remember {
         mutableStateOf("")
     }
@@ -62,7 +100,7 @@ private fun LRListContent(modifier: Modifier) {
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        repeat(18) {
+        repeat(25) {
             item {
                 Text(
                     text = "测试:$it",
@@ -73,13 +111,15 @@ private fun LRListContent(modifier: Modifier) {
                 )
             }
         }
-        item {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                value = textField,
-                onValueChange = { textField = it })
+        if(!ignoreEdit) {
+            item {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(60.dp),
+                    value = textField,
+                    onValueChange = { textField = it })
+            }
         }
     }
 }
