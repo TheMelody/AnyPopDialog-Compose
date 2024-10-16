@@ -9,12 +9,16 @@ AnyPopDialog-Compose
 
 > [!NOTE]  
 > AnyPopDialog需要自己传修改后的Modifier，如Modifier.systemBarsPadding()等等
-> 示例中提供了如何设置导航栏和状态栏颜色的例子，请自行查看
+> 
+> 示例中提供了如何设置导航栏和状态栏颜色的例子(**不是很理解，感觉很癫**)，如有需要可自行查看
 
 
 # 效果
-
-<img src="screenshot/preview.gif" width="30%"/>
+<div>
+    <img src="screenshot/preview.gif" width="30%"/>
+    <img src="screenshot/小横条.gif" width="30%"/>
+    <img src="screenshot/三大金刚.gif" width="30%"/>
+</div>
 
 
 # 集成
