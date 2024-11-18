@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,7 +37,7 @@ internal fun TopToastDialog(showDialog: Boolean, onDismiss: () -> Unit) {
                 .requiredHeightIn(max = 160.dp, min = 80.dp)
                 .background(color = colorResource(id = R.color.dialog_toast_background))
                 .clickable(
-                    indication = rememberRipple(),
+                    indication = ripple(),
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = {
                         isActiveClose = true

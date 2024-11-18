@@ -36,6 +36,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
@@ -43,6 +45,7 @@ import androidx.compose.ui.window.DialogWindowProvider
 import androidx.compose.ui.window.SecureFlagPolicy
 import androidx.core.view.WindowCompat
 import kotlinx.coroutines.delay
+import kotlin.math.roundToInt
 
 @Composable
 private fun getDialogWindow(): Window? = (LocalView.current.parent as? DialogWindowProvider)?.window
@@ -56,6 +59,16 @@ private tailrec fun Context.getActivityWindow(): Window? = when (this) {
     else -> null
 }
 
+private fun Context.getDisplayWidth(): Int{
+    val density = resources.displayMetrics.density
+    return (resources.configuration.screenWidthDp * density).roundToInt()
+}
+
+private fun Context.getDisplayHeight(): Int{
+    val density = resources.displayMetrics.density
+    return (resources.configuration.screenHeightDp * density).roundToInt()
+}
+
 private const val DefaultDurationMillis: Int = 250
 
 @Composable
@@ -65,6 +78,7 @@ private fun DialogFullScreen(
     properties: AnyPopDialogProperties,
     content: @Composable () -> Unit
 ) {
+    val isPreview = LocalInspectionMode.current
     var isAnimateLayout by remember {
         mutableStateOf(false)
     }
@@ -111,31 +125,37 @@ private fun DialogFullScreen(
                 }
             }
             val activityWindow = getActivityWindow()
-
             val dialogWindow = getDialogWindow()
             val parentView = LocalView.current.parent as View
+            // 处理预览模式，宽高问题
+            val displayWidth = activityWindow?.decorView?.width ?: LocalContext.current.getDisplayWidth()
+            val displayHeight = activityWindow?.decorView?.height ?: LocalContext.current.getDisplayHeight()
             SideEffect {
-                if (activityWindow == null || dialogWindow == null || isBackPress || isAnimateLayout)
+                if (
+                    (isPreview && (isBackPress || isAnimateLayout)) ||
+                    (!isPreview && (activityWindow == null || dialogWindow == null || isBackPress || isAnimateLayout))
+                ) {
                     return@SideEffect
+                }
+                if(dialogWindow != null) {
+                    val attributes = WindowManager.LayoutParams()
+                    if (activityWindow != null) { // 判空忽略预览模式
+                        attributes.copyFrom(activityWindow.attributes)
+                    }
+                    attributes.type = dialogWindow.attributes.type
+                    dialogWindow.attributes = attributes
+                    // 修复Android10 - Android11出现背景全黑的情况
+                    dialogWindow.setBackgroundDrawableResource(android.R.color.transparent)
+                    // 禁止Dialog跟随软键盘高度变化，用Compose提供的imePadding替代
+                    dialogWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
 
-                val attributes = WindowManager.LayoutParams()
-                attributes.copyFrom(activityWindow.attributes)
-                attributes.type = dialogWindow.attributes.type
-                dialogWindow.attributes = attributes
-                // 修复Android10 - Android11出现背景全黑的情况
-                dialogWindow.setBackgroundDrawableResource(android.R.color.transparent)
-                // 禁止Dialog跟随软键盘高度变化，用Compose提供的imePadding替代
-                dialogWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+                    dialogWindow.setLayout(displayWidth, displayHeight)
+                    dialogWindow.statusBarColor = Color.Transparent.toArgb()
+                    dialogWindow.navigationBarColor = Color.Transparent.toArgb()
 
-                dialogWindow.setLayout(
-                    activityWindow.decorView.width,
-                    activityWindow.decorView.height
-                )
-                dialogWindow.statusBarColor = Color.Transparent.toArgb()
-                dialogWindow.navigationBarColor = Color.Transparent.toArgb()
-
-                WindowCompat.getInsetsController(dialogWindow, parentView)
-                    .isAppearanceLightNavigationBars = properties.isAppearanceLightNavigationBars
+                    WindowCompat.getInsetsController(dialogWindow, parentView)
+                        .isAppearanceLightNavigationBars = properties.isAppearanceLightNavigationBars
+                }
                 isAnimateLayout = true
             }
             Box(
@@ -158,7 +178,8 @@ private fun DialogFullScreen(
                 )
                 AnimatedVisibility(
                     modifier = Modifier.pointerInput(Unit) {},
-                    visible = isAnimateLayout,
+                    // 预览还想直接显示UI的情况，配置其他方向需要点击：Start interactive mode这个手势按钮
+                    visible = if(isPreview && properties.direction == DirectionState.NONE) true else isAnimateLayout,
                     enter = when (properties.direction) {
                         DirectionState.TOP -> slideInVertically(initialOffsetY = { -it })
                         DirectionState.LEFT -> slideInHorizontally(initialOffsetX = { -it })

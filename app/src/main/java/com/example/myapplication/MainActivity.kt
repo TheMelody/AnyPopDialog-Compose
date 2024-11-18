@@ -1,11 +1,13 @@
 package com.example.myapplication
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,13 +19,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
+import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.widget.LRListDialog
 import com.example.myapplication.widget.LRListSB1Dialog
 import com.example.myapplication.widget.NoNetWorkHelpDialog
 import com.example.myapplication.widget.NoNetWorkHelpNavBarDialog1
 import com.example.myapplication.widget.TopToastDialog
+import com.melody.dialog.any_pop.AnyPopDialog
+import com.melody.dialog.any_pop.AnyPopDialogProperties
+import com.melody.dialog.any_pop.DirectionState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,10 +93,32 @@ fun TestContent(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    showBackground = true,
+    device = "id:Nexus 5"
+)
 @Composable
 fun GreetingPreview() {
     MyApplicationTheme {
-        TestContent()
+        TestContent(modifier = Modifier.fillMaxSize())
+    }
+}
+
+@Preview(
+    showBackground = true,
+    device = "id:Nexus 5",
+    wallpaper = Wallpapers.YELLOW_DOMINATED_EXAMPLE,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
+@Composable
+fun PreviewAnyPopDialog() {
+    MyApplicationTheme(dynamicColor = true, darkTheme = false) {
+        AnyPopDialog(
+            onDismiss = {},
+            properties = AnyPopDialogProperties(direction = DirectionState.NONE),
+            content = {
+                Text("我是预览模式下的内容", color = Color.White, modifier = Modifier.padding(16.dp))
+            }
+        )
     }
 }

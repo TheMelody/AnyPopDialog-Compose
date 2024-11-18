@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,7 +59,7 @@ internal fun NoNetWorkHelpDialog(showDialog: Boolean, onDismiss: () -> Unit) {
             content = {
                 NetSettingContent(
                     modifier = Modifier
-                        .padding(start = 20.dp, end = 20.dp, bottom = 20.dp)
+                        .padding(20.dp)
                         .fillMaxWidth()
                         .wrapContentHeight(),
                     onDismiss = {
@@ -131,7 +132,7 @@ private fun TitleAndClose(onDismiss: () -> Unit) {
                 .align(Alignment.TopEnd)
                 .clip(CircleShape)
                 .clickable(
-                    indication = rememberRipple(),
+                    indication = ripple(),
                     interactionSource = remember { MutableInteractionSource() },
                     onClick = currentOnDismiss
                 )
@@ -166,7 +167,7 @@ private fun ColumnScope.RoundCornerOkButton(onDismiss: () -> Unit) {
             )
             .clip(RoundedCornerShape(23.dp))
             .clickable(
-                indication = rememberRipple(),
+                indication = ripple(),
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = currentOnDismiss
             ),
