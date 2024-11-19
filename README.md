@@ -25,7 +25,7 @@ AnyPopDialog-Compose
 
 ```gradle.kts
 dependencies {
-    implementation("io.github.TheMelody:any_pop_dialog_compose:1.0.3")
+    implementation("io.github.TheMelody:any_pop_dialog_compose:1.0.4")
 }
 ```
 
